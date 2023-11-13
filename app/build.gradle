@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace 'edu.uga.cs.rideshareapplication'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "edu.uga.cs.rideshareapplication"
