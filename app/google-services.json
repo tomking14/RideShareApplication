@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "801598553370",
+    "firebase_url": "https://superapp-86f4e-default-rtdb.firebaseio.com",
+    "project_id": "superapp-86f4e",
+    "storage_bucket": "superapp-86f4e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:801598553370:android:b1c35534b60de71942c0a3",
+        "android_client_info": {
+          "package_name": "edu.uga.cs.rideshareapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVKfKIUv92wz9AcKeBindwligQPyLdZOg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
