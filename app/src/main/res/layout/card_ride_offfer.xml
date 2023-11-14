@@ -12,7 +12,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="10dp">
 
         <TextView
             android:id="@+id/tvDate"
@@ -26,13 +27,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Departure Location"
-            android:textSize="16sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/tvDropOffLocation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Drop Off Location"
-            android:textSize="16sp" />
+            android:textSize="18sp" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>
