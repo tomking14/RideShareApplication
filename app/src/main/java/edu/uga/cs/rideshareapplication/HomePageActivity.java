@@ -12,10 +12,13 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class HomePageActivity extends AppCompatActivity {
     private Button signOutButton;
+    private Button rideRequests;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.homepage_activity);
         signOutButton = findViewById(R.id.signoutBtn);
+        rideRequests = findViewById(R.id.requestsBtn);
+        rideRequests.setOnClickListener(new ActivityStarterClass(RideRequestsActivity.class));
         signOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
