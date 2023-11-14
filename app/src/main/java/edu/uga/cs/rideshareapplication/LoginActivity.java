@@ -1,5 +1,6 @@
 package edu.uga.cs.rideshareapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,48 +20,50 @@ public class LoginActivity extends AppCompatActivity {
     private Button loginButton;
     public static final String TAG = "SuperApp";
     private FirebaseAuth mAuth;
+    private TextInputEditText loginEmailEditText, loginPasswordEditText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.loginactivty);
 
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
+
+        loginEmailEditText = findViewById(R.id.login_username); // Assuming this is actually the email field
+        loginPasswordEditText = findViewById(R.id.login_password);
         loginButton = findViewById(R.id.loginBtn);
-//        loginButton.setOnClickListener(new ActivityStarterClass(HomePageActivity.class));
-        loginButton = findViewById(R.id.loginBtn);
-        TextInputEditText loginUsernameEditText = findViewById(R.id.login_username);
-        TextInputEditText loginPasswordEditText = findViewById(R.id.login_password);
+
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Retrieve user inputs
-                String username = loginUsernameEditText.getText().toString();
+                String email = loginEmailEditText.getText().toString();
                 String password = loginPasswordEditText.getText().toString();
 
-                // Authenticate with Firebase
-                mAuth.signInWithEmailAndPassword(username, password)
-                        .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    // Sign in success
-                                    Log.d(TAG, "signInWithEmail:success");
-                                    Toast.makeText(LoginActivity.this, "Login successful.", Toast.LENGTH_SHORT).show();
-
-                                    // Use ActivityStarterClass to start HomePageActivity
-                                    ActivityStarterClass activityStarter = new ActivityStarterClass(HomePageActivity.class);
-                                    activityStarter.onClick(v); // You can pass the button itself as the view
-                                } else {
-                                    // Sign in fails
-                                    Log.w(TAG, "signInWithEmail:failure", task.getException());
-                                    Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
+                signInWithEmailPassword(email, password);
             }
         });
-
-
-
     }
 
+    private void signInWithEmailPassword(String email, String password) {
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Log and Toast messages
+                            Log.d(TAG, "signInWithEmail:success");
+                            Toast.makeText(LoginActivity.this, "Login successful.", Toast.LENGTH_SHORT).show();
+
+                            // Proceed to next page (HomePageActivity)
+                            Intent intent = new Intent(LoginActivity.this, HomePageActivity.class);
+                            startActivity(intent);
+                        } else {
+                            // If sign-in fails, display a message to the user
+                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
 }
