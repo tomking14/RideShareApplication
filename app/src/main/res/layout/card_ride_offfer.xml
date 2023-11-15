@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cardView"
@@ -9,33 +8,54 @@
     app:cardElevation="4dp"
     android:padding="16dp">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="14dp">
+        android:paddingTop="5dp"
+        android:paddingRight="6dp">
 
-        <TextView
-            android:id="@+id/tvDate"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:id="@+id/llContent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:text="Date"
-            android:textSize="18sp" />
+            android:orientation="vertical"
+            android:padding="14dp">
 
-        <TextView
-            android:id="@+id/tvDepartureLocation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:text="Departure Location"
-            android:textSize="18sp" />
+            <TextView
+                android:id="@+id/tvDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="Date"
+                android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/tvDropOffLocation"
-            android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tvDepartureLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="Departure Location"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tvDropOffLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Drop Off Location"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnAccept"
+            style="@style/Widget.Material3.Button.TonalButton"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:text="Drop Off Location"
-            android:textSize="18sp" />
-    </LinearLayout>
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@id/llContent"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:text="Accept"
+            android:textSize="14sp" />
+
+    </RelativeLayout>
 </androidx.cardview.widget.CardView>
