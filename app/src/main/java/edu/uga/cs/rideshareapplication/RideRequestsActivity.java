@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -118,12 +120,23 @@ public class RideRequestsActivity extends AppCompatActivity {
         TextView tvDate = cardView.findViewById(R.id.tvDate);
         TextView tvDepartureLocation = cardView.findViewById(R.id.tvDepartureLocation);
         TextView tvDropOffLocation = cardView.findViewById(R.id.tvDropOffLocation);
+        Button acceptButton = cardView.findViewById(R.id.btnAccept);
+        acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Handle the button click
+                handleAcceptButtonClick(date, departureLocation, dropOffLocation);
+            }
+        });
 
         tvDate.setText("Date: " + date);
         tvDepartureLocation.setText("Departure: " + departureLocation);
         tvDropOffLocation.setText("Drop-off: " + dropOffLocation);
 
         requestContainer.addView(cardView);
+    }
+    private void handleAcceptButtonClick(String date, String departureLocation, String dropOffLocation) {
+        Toast.makeText(RideRequestsActivity.this, date +", " + departureLocation + ", " + dropOffLocation, Toast.LENGTH_SHORT).show();
     }
 
     private void fetchAndDisplayOffers() {

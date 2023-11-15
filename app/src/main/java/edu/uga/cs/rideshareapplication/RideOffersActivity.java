@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -121,6 +123,15 @@ public class RideOffersActivity extends AppCompatActivity {
         TextView tvDate = cardView.findViewById(R.id.tvDate);
         TextView tvDepartureLocation = cardView.findViewById(R.id.tvDepartureLocation);
         TextView tvDropOffLocation = cardView.findViewById(R.id.tvDropOffLocation);
+        Button acceptButton = cardView.findViewById(R.id.btnAccept);
+        acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Handle the button click
+                // You can use date, departureLocation, and dropOffLocation here
+                handleAcceptButtonClick(date, departureLocation, dropOffLocation);
+            }
+        });
 
         tvDate.setText("Date: " + date);
         tvDepartureLocation.setText("Departure: " + departureLocation);
@@ -129,6 +140,9 @@ public class RideOffersActivity extends AppCompatActivity {
         offerContainer.addView(cardView);
 
 
+    }
+    private void handleAcceptButtonClick(String date, String departureLocation, String dropOffLocation) {
+        Toast.makeText(RideOffersActivity.this, date +", " + departureLocation + ", " + dropOffLocation, Toast.LENGTH_SHORT).show();
     }
 
     private void fetchAndDisplayOffers() {
@@ -156,12 +170,6 @@ public class RideOffersActivity extends AppCompatActivity {
         super.onStart();
         fetchAndDisplayOffers();
     }
-
-
-
-
-
-
 
 
 }
