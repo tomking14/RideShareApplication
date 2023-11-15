@@ -3,6 +3,7 @@ package edu.uga.cs.rideshareapplication;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -13,16 +14,55 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
 
 public class RideOffersActivity extends AppCompatActivity {
+    private DatabaseReference offersRef;
     private LinearLayout offerContainer;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ride_offers);
+
         ExtendedFloatingActionButton fabAddOffer = findViewById(R.id.fab_add_Offer);
 
         offerContainer = findViewById(R.id.offerContainer);
+
+        offersRef = FirebaseDatabase.getInstance().getReference("ride_offers");
+
+//delete
+
+       offersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                HashMap<String, RideOffer> uniqueOffers = new HashMap<>();
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    RideOffer offer = snapshot.getValue(RideOffer.class);
+                    if (offer != null) {
+                        String key = offer.date + offer.departureLocation + offer.dropOffLocation;
+                        if (!uniqueOffers.containsKey(key)) {
+                            uniqueOffers.put(key, offer);
+                        } else {
+                            // This is a duplicate, so remove it from Firebase
+                            snapshot.getRef().removeValue();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("RideOffersActivity", "Error fetching data", databaseError.toException());
+            }
+        });
+
 
         fabAddOffer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,6 +86,13 @@ public class RideOffersActivity extends AppCompatActivity {
                         String departureLocation = editText2.getText().toString();
                         String dropOffLocation = editText3.getText().toString();
                         addOfferToContainer(date, departureLocation, dropOffLocation);
+
+
+
+                        RideOffer offer = new RideOffer(date, departureLocation, dropOffLocation);
+
+                        // Push the offer to the database
+                        offersRef.push().setValue(offer);
 
                         dialog.dismiss();
                     }
@@ -80,7 +127,39 @@ public class RideOffersActivity extends AppCompatActivity {
         tvDropOffLocation.setText(dropOffLocation);
 
         offerContainer.addView(cardView);
+
+
     }
+
+    private void fetchAndDisplayOffers() {
+        offersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                offerContainer.removeAllViews(); // Clear existing views
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    RideOffer offer = snapshot.getValue(RideOffer.class);
+                    if (offer != null) {
+                        addOfferToContainer(offer.date, offer.departureLocation, offer.dropOffLocation);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("RideOffersActivity", "Error fetching data", databaseError.toException());
+            }
+        });
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        fetchAndDisplayOffers();
+    }
+
+
+
+
 
 
 
