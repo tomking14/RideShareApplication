@@ -119,9 +119,9 @@ public class RideRequestsActivity extends AppCompatActivity {
         TextView tvDepartureLocation = cardView.findViewById(R.id.tvDepartureLocation);
         TextView tvDropOffLocation = cardView.findViewById(R.id.tvDropOffLocation);
 
-        tvDate.setText(date);
-        tvDepartureLocation.setText(departureLocation);
-        tvDropOffLocation.setText(dropOffLocation);
+        tvDate.setText("Date: " + date);
+        tvDepartureLocation.setText("Departure: " + departureLocation);
+        tvDropOffLocation.setText("Drop-off: " + dropOffLocation);
 
         requestContainer.addView(cardView);
     }
