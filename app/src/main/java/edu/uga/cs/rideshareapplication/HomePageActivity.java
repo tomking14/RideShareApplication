@@ -65,7 +65,6 @@ public class HomePageActivity extends AppCompatActivity {
                         Toast.makeText(HomePageActivity.this, "Uh oh, I couldn't find any points." , Toast.LENGTH_SHORT).show();
                     }
                 }
-
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                     // Handle possible errors
@@ -73,7 +72,7 @@ public class HomePageActivity extends AppCompatActivity {
             });
         } else {
             // Handle user not signed in
-            // You can show a message or direct the user to a sign-in page
+            Toast.makeText(HomePageActivity.this, "Uh oh, I couldn't sign you in :(" , Toast.LENGTH_SHORT).show();
         }
 
 
