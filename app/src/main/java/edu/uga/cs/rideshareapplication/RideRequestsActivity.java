@@ -41,7 +41,6 @@ public class RideRequestsActivity extends AppCompatActivity {
             // User is signed in
             userMail = currentUser.getEmail();
 //            Toast.makeText(RideRequestsActivity.this, userMail , Toast.LENGTH_SHORT).show();
-            // Now you can use the email in your activity
         } else {
             Toast.makeText(RideRequestsActivity.this, "Uh oh, I couldn't sign you in." , Toast.LENGTH_SHORT).show();
             // No user is signed in
@@ -149,8 +148,34 @@ public class RideRequestsActivity extends AppCompatActivity {
         requestContainer.addView(cardView);
     }
     private void handleAcceptButtonClick(String email, String date, String departureLocation, String dropOffLocation) {
-        Toast.makeText(RideRequestsActivity.this, "user that made request: " + email, Toast.LENGTH_SHORT).show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(RideRequestsActivity.this);
+        LayoutInflater inflater = getLayoutInflater();
+
+        View dialogView = inflater.inflate(R.layout.dialog_confirm, null);
+        builder.setView(dialogView);
+
+        // Fetch and set the text for the TextView
+        TextView tvRideRequestDetails = dialogView.findViewById(R.id.tvRideRequestDetails);
+        tvRideRequestDetails.setText("Are you sure you want to accept the ride request for " + email + "?");
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Handle the Confirm action here
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Handle the Cancel action here
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
+
 
     private void fetchAndDisplayOffers() {
         requestRef.addListenerForSingleValueEvent(new ValueEventListener() {

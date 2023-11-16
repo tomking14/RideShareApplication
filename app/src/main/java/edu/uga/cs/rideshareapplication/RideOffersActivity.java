@@ -45,8 +45,8 @@ public class RideOffersActivity extends AppCompatActivity {
         if (currentUser != null) {
             // User is signed in
             userMail = currentUser.getEmail();
-            Toast.makeText(RideOffersActivity.this, userMail , Toast.LENGTH_SHORT).show();
-            // Now you can use the email in your activity
+//            Toast.makeText(RideOffersActivity.this, userMail , Toast.LENGTH_SHORT).show();
+
         } else {
             Toast.makeText(RideOffersActivity.this, "Uh oh, I couldn't sign you in." , Toast.LENGTH_SHORT).show();
             // No user is signed in
@@ -91,8 +91,8 @@ public class RideOffersActivity extends AppCompatActivity {
 
                 // Set up the EditTexts and other views here if needed
               EditText editText1 = dialogView.findViewById(R.id.editText1);
-                EditText editText2 = dialogView.findViewById(R.id.editText2);
-               EditText editText3 = dialogView.findViewById(R.id.editText3);
+              EditText editText2 = dialogView.findViewById(R.id.editText2);
+              EditText editText3 = dialogView.findViewById(R.id.editText3);
 
                 // Set up a button to close the dialog
                 builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
@@ -155,8 +155,33 @@ public class RideOffersActivity extends AppCompatActivity {
 
 
     }
-    private void handleAcceptButtonClick(String email,String date, String departureLocation, String dropOffLocation) {
-        Toast.makeText(RideOffersActivity.this, "user that made offer: " + email, Toast.LENGTH_SHORT).show();
+    private void handleAcceptButtonClick(String email, String date, String departureLocation, String dropOffLocation) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(RideOffersActivity.this);
+        LayoutInflater inflater = getLayoutInflater();
+
+        View dialogView = inflater.inflate(R.layout.dialog_confirm, null);
+        builder.setView(dialogView);
+
+        // Fetch and set the text for the TextView
+        TextView tvRideRequestDetails = dialogView.findViewById(R.id.tvRideRequestDetails);
+        tvRideRequestDetails.setText("Are you sure you want to accept the ride offer for " + email + "?");
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Handle the Confirm action here
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Handle the Cancel action here
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void fetchAndDisplayOffers() {
