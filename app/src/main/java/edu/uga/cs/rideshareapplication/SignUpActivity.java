@@ -15,6 +15,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -49,6 +56,16 @@ public class SignUpActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
+                            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+
+                            // Add initial points for the new user
+                            if (user != null) {
+                                String userId = user.getUid();
+                                Map<String, Object> userData = new HashMap<>();
+                                userData.put("email", email);
+                                userData.put("points", 100);
+                                databaseReference.child("users").child(userId).setValue(userData);
+                            }
                             Toast.makeText(SignUpActivity.this, "Registration Successful!!", Toast.LENGTH_SHORT).show();
                             goToMainActivity();
                         } else {
@@ -57,6 +74,7 @@ public class SignUpActivity extends AppCompatActivity {
                         }
                     }
                 });
+
     }
 
     public void goToMainActivity() {
@@ -64,5 +82,6 @@ public class SignUpActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
     }
+
 
 }

@@ -164,7 +164,13 @@ public class RideOffersActivity extends AppCompatActivity {
 
         // Fetch and set the text for the TextView
         TextView tvRideRequestDetails = dialogView.findViewById(R.id.tvRideRequestDetails);
-        tvRideRequestDetails.setText("Are you sure you want to accept the ride offer for " + email + "?");
+        TextView tvRideDate = dialogView.findViewById(R.id.tvRideDate);
+        TextView tvRideDeparture = dialogView.findViewById(R.id.tvRideDeparture);
+        TextView tvRideDropOff = dialogView.findViewById(R.id.tvRideDropOff);
+        tvRideRequestDetails.setText("Are you sure you want to accept the ride request for " + email + "?");
+        tvRideDate.setText("Date: " + date);
+        tvRideDeparture.setText("Departure: " + departureLocation);
+        tvRideDropOff.setText("Drop-off: " + dropOffLocation);
         builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

@@ -22,7 +22,9 @@ public class MainActivity extends AppCompatActivity {
         signupButton.setOnClickListener(new ActivityStarterClass(SignUpActivity.class));
 
 
+
     }
+
 
 
 }
