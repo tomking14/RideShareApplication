@@ -16,6 +16,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,6 +29,7 @@ import java.util.HashMap;
 public class RideOffersActivity extends AppCompatActivity {
     private DatabaseReference offersRef;
     private LinearLayout offerContainer;
+    private String userMail;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +41,17 @@ public class RideOffersActivity extends AppCompatActivity {
 
         offersRef = FirebaseDatabase.getInstance().getReference("ride_offers");
 
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            // User is signed in
+            userMail = currentUser.getEmail();
+            Toast.makeText(RideOffersActivity.this, userMail , Toast.LENGTH_SHORT).show();
+            // Now you can use the email in your activity
+        } else {
+            Toast.makeText(RideOffersActivity.this, "Uh oh, I couldn't sign you in." , Toast.LENGTH_SHORT).show();
+            // No user is signed in
+        }
+
 //delete
 
        offersRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -48,7 +62,7 @@ public class RideOffersActivity extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     RideOffer offer = snapshot.getValue(RideOffer.class);
                     if (offer != null) {
-                        String key = offer.date + offer.departureLocation + offer.dropOffLocation;
+                        String key = offer.userOfferEmail + offer.date + offer.departureLocation + offer.dropOffLocation;
                         if (!uniqueOffers.containsKey(key)) {
                             uniqueOffers.put(key, offer);
                         } else {
@@ -87,11 +101,11 @@ public class RideOffersActivity extends AppCompatActivity {
                         String date = editText1.getText().toString();
                         String departureLocation = editText2.getText().toString();
                         String dropOffLocation = editText3.getText().toString();
-                        addOfferToContainer(date, departureLocation, dropOffLocation);
+                        addOfferToContainer(userMail, date, departureLocation, dropOffLocation);
 
 
 
-                        RideOffer offer = new RideOffer(date, departureLocation, dropOffLocation);
+                        RideOffer offer = new RideOffer( userMail, date, departureLocation, dropOffLocation);
 
                         // Push the offer to the database
                         offersRef.push().setValue(offer);
@@ -117,7 +131,7 @@ public class RideOffersActivity extends AppCompatActivity {
     }
 
 
-    private void addOfferToContainer(String date, String departureLocation, String dropOffLocation) {
+    private void addOfferToContainer(String email, String date, String departureLocation, String dropOffLocation) {
         View cardView = LayoutInflater.from(this).inflate(R.layout.card_ride_offfer, offerContainer, false);
 
         TextView tvDate = cardView.findViewById(R.id.tvDate);
@@ -129,7 +143,7 @@ public class RideOffersActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Handle the button click
                 // You can use date, departureLocation, and dropOffLocation here
-                handleAcceptButtonClick(date, departureLocation, dropOffLocation);
+                handleAcceptButtonClick(email, date, departureLocation, dropOffLocation);
             }
         });
 
@@ -141,8 +155,8 @@ public class RideOffersActivity extends AppCompatActivity {
 
 
     }
-    private void handleAcceptButtonClick(String date, String departureLocation, String dropOffLocation) {
-        Toast.makeText(RideOffersActivity.this, date +", " + departureLocation + ", " + dropOffLocation, Toast.LENGTH_SHORT).show();
+    private void handleAcceptButtonClick(String email,String date, String departureLocation, String dropOffLocation) {
+        Toast.makeText(RideOffersActivity.this, "user that made offer: " + email, Toast.LENGTH_SHORT).show();
     }
 
     private void fetchAndDisplayOffers() {
@@ -154,7 +168,7 @@ public class RideOffersActivity extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     RideOffer offer = snapshot.getValue(RideOffer.class);
                     if (offer != null) {
-                        addOfferToContainer(offer.date, offer.departureLocation, offer.dropOffLocation);
+                        addOfferToContainer(offer.userOfferEmail, offer.date, offer.departureLocation, offer.dropOffLocation);
                     }
                 }
             }
