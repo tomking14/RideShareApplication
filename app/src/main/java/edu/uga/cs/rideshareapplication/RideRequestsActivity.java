@@ -12,9 +12,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -97,7 +100,7 @@ public class RideRequestsActivity extends AppCompatActivity {
                         String date = editText1.getText().toString();
                         String departureLocation = editText2.getText().toString();
                         String dropOffLocation = editText3.getText().toString();
-                        addRequestToContainer(userMail,date, departureLocation, dropOffLocation);
+                        addRequestToContainer(null,userMail,date, departureLocation, dropOffLocation);
 
                         RideRequest request = new RideRequest(userMail,date, departureLocation, dropOffLocation);
 
@@ -126,18 +129,36 @@ public class RideRequestsActivity extends AppCompatActivity {
     }
 
 
-    private void addRequestToContainer(String email, String date, String departureLocation, String dropOffLocation) {
+    private void addRequestToContainer(String key, String email, String date, String departureLocation, String dropOffLocation) {
         View cardView = LayoutInflater.from(this).inflate(R.layout.card_ride_offfer, requestContainer, false);
 
         TextView tvDate = cardView.findViewById(R.id.tvDate);
         TextView tvDepartureLocation = cardView.findViewById(R.id.tvDepartureLocation);
         TextView tvDropOffLocation = cardView.findViewById(R.id.tvDropOffLocation);
         Button acceptButton = cardView.findViewById(R.id.btnAccept);
+        Button deleteBtn = cardView.findViewById(R.id.btnDelete);
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Handle the button click
                 handleAcceptButtonClick(email, date, departureLocation, dropOffLocation);
+            }
+        });
+        deleteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestRef.child(key).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        requestContainer.removeView(cardView);
+                        Toast.makeText(RideRequestsActivity.this, "Request deleted successfully.", Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(RideRequestsActivity.this, "Failed to delete the request: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
 
@@ -192,7 +213,8 @@ public class RideRequestsActivity extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     RideRequest request = snapshot.getValue(RideRequest.class);
                     if (request != null) {
-                        addRequestToContainer(request.userRequestEmail, request.date, request.departureLocation, request.dropOffLocation);
+                        String key = snapshot.getKey();
+                        addRequestToContainer(key, request.userRequestEmail, request.date, request.departureLocation, request.dropOffLocation);
                     }
                 }
             }

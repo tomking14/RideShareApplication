@@ -12,9 +12,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -101,7 +104,7 @@ public class RideOffersActivity extends AppCompatActivity {
                         String date = editText1.getText().toString();
                         String departureLocation = editText2.getText().toString();
                         String dropOffLocation = editText3.getText().toString();
-                        addOfferToContainer(userMail, date, departureLocation, dropOffLocation);
+                        addOfferToContainer(null,userMail, date, departureLocation, dropOffLocation);
 
 
 
@@ -131,19 +134,37 @@ public class RideOffersActivity extends AppCompatActivity {
     }
 
 
-    private void addOfferToContainer(String email, String date, String departureLocation, String dropOffLocation) {
+    private void addOfferToContainer(String key,String email, String date, String departureLocation, String dropOffLocation) {
         View cardView = LayoutInflater.from(this).inflate(R.layout.card_ride_offfer, offerContainer, false);
 
         TextView tvDate = cardView.findViewById(R.id.tvDate);
         TextView tvDepartureLocation = cardView.findViewById(R.id.tvDepartureLocation);
         TextView tvDropOffLocation = cardView.findViewById(R.id.tvDropOffLocation);
         Button acceptButton = cardView.findViewById(R.id.btnAccept);
+        Button deleteBtn = cardView.findViewById(R.id.btnDelete);
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Handle the button click
                 // You can use date, departureLocation, and dropOffLocation here
                 handleAcceptButtonClick(email, date, departureLocation, dropOffLocation);
+            }
+        });
+        deleteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                offersRef.child(key).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        offerContainer.removeView(cardView);
+                        Toast.makeText(RideOffersActivity.this, "Request deleted successfully.", Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(RideOffersActivity.this, "Failed to delete the request: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
 
@@ -199,7 +220,8 @@ public class RideOffersActivity extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     RideOffer offer = snapshot.getValue(RideOffer.class);
                     if (offer != null) {
-                        addOfferToContainer(offer.userOfferEmail, offer.date, offer.departureLocation, offer.dropOffLocation);
+                        String key = snapshot.getKey();
+                        addOfferToContainer(key,offer.userOfferEmail, offer.date, offer.departureLocation, offer.dropOffLocation);
                     }
                 }
             }
