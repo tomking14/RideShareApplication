@@ -100,15 +100,20 @@ public class RideRequestsActivity extends AppCompatActivity {
                         String date = editText1.getText().toString();
                         String departureLocation = editText2.getText().toString();
                         String dropOffLocation = editText3.getText().toString();
-                        addRequestToContainer(null,userMail,date, departureLocation, dropOffLocation);
 
-                        RideRequest request = new RideRequest(userMail,date, departureLocation, dropOffLocation);
+                        RideRequest request = new RideRequest(userMail, date, departureLocation, dropOffLocation);
 
-                        // Push the offer to the database
-                        requestRef.push().setValue(request);
-
-
-                        dialog.dismiss();
+                        // Push the offer to the database and retrieve the key
+                        DatabaseReference newRef = requestRef.push();
+                        newRef.setValue(request).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                // Once the data is pushed successfully, fetch the key
+                                String firebaseKey = newRef.getKey();
+                                // Now use this key to add the request to the container
+                                addRequestToContainer(firebaseKey, userMail, date, departureLocation, dropOffLocation);
+                            }
+                        });
                     }
                 });
 

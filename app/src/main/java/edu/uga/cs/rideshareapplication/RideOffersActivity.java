@@ -104,16 +104,20 @@ public class RideOffersActivity extends AppCompatActivity {
                         String date = editText1.getText().toString();
                         String departureLocation = editText2.getText().toString();
                         String dropOffLocation = editText3.getText().toString();
-                        addOfferToContainer(null,userMail, date, departureLocation, dropOffLocation);
 
+                        RideRequest request = new RideRequest(userMail, date, departureLocation, dropOffLocation);
 
-
-                        RideOffer offer = new RideOffer( userMail, date, departureLocation, dropOffLocation);
-
-                        // Push the offer to the database
-                        offersRef.push().setValue(offer);
-
-                        dialog.dismiss();
+                        // Push the offer to the database and retrieve the key
+                        DatabaseReference newRef = offersRef.push();
+                        newRef.setValue(request).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                // Once the data is pushed successfully, fetch the key
+                                String firebaseKey = newRef.getKey();
+                                // Now use this key to add the request to the container
+                                addOfferToContainer(firebaseKey, userMail, date, departureLocation, dropOffLocation);
+                            }
+                        });
                     }
                 });
 
@@ -141,6 +145,7 @@ public class RideOffersActivity extends AppCompatActivity {
         TextView tvDepartureLocation = cardView.findViewById(R.id.tvDepartureLocation);
         TextView tvDropOffLocation = cardView.findViewById(R.id.tvDropOffLocation);
         Button acceptButton = cardView.findViewById(R.id.btnAccept);
+        Button modifyButton = cardView.findViewById(R.id.btnModify);
         Button deleteBtn = cardView.findViewById(R.id.btnDelete);
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,6 +155,67 @@ public class RideOffersActivity extends AppCompatActivity {
                 handleAcceptButtonClick(email, date, departureLocation, dropOffLocation);
             }
         });
+        modifyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (userMail != null && userMail.equals(email)) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(RideOffersActivity.this);
+                    LayoutInflater inflater = getLayoutInflater();
+                    View dialogView = inflater.inflate(R.layout.request_dialog, null);
+                    builder.setView(dialogView);
+
+                    EditText editText1 = dialogView.findViewById(R.id.editText1);
+                    EditText editText2 = dialogView.findViewById(R.id.editText2);
+                    EditText editText3 = dialogView.findViewById(R.id.editText3);
+
+                    // Pre-fill the dialog with existing request data
+                    editText1.setText(date);
+                    editText2.setText(departureLocation);
+                    editText3.setText(dropOffLocation);
+
+                    builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String newDate = editText1.getText().toString();
+                            String newDepartureLocation = editText2.getText().toString();
+                            String newDropOffLocation = editText3.getText().toString();
+
+                            RideRequest updatedRequest = new RideRequest(email, newDate, newDepartureLocation, newDropOffLocation);
+
+                            // Update Firebase with the new details
+                            offersRef.child(key).setValue(updatedRequest).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    // Update the card view or refresh the UI
+                                    tvDate.setText("Date: " + newDate);
+                                    tvDepartureLocation.setText("Departure: " + newDepartureLocation);
+                                    tvDropOffLocation.setText("Drop-off: " + newDropOffLocation);
+                                    Toast.makeText(RideOffersActivity.this, "Offer updated successfully.", Toast.LENGTH_SHORT).show();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(RideOffersActivity.this, "Failed to update the request: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    });
+
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                } else {
+                    Toast.makeText(RideOffersActivity.this, "You can only edit your own offers.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,17 +225,17 @@ public class RideOffersActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(Void aVoid) {
                             offerContainer.removeView(cardView);
-                            Toast.makeText(RideOffersActivity.this, "Request deleted successfully.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RideOffersActivity.this, "Offer deleted successfully.", Toast.LENGTH_SHORT).show();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(RideOffersActivity.this, "Failed to delete the request: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RideOffersActivity.this, "Failed to delete the offer: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
                 } else {
                     // The user email does not match the one on the card
-                    Toast.makeText(RideOffersActivity.this, "You can only delete your own requests.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RideOffersActivity.this, "You can only delete your own offers.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
