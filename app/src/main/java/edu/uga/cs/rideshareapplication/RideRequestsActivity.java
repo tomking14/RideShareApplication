@@ -136,12 +136,73 @@ public class RideRequestsActivity extends AppCompatActivity {
         TextView tvDepartureLocation = cardView.findViewById(R.id.tvDepartureLocation);
         TextView tvDropOffLocation = cardView.findViewById(R.id.tvDropOffLocation);
         Button acceptButton = cardView.findViewById(R.id.btnAccept);
+        Button modifyButton = cardView.findViewById(R.id.btnModify);
         Button deleteBtn = cardView.findViewById(R.id.btnDelete);
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Handle the button click
                 handleAcceptButtonClick(email, date, departureLocation, dropOffLocation);
+            }
+        });
+        modifyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (userMail != null && userMail.equals(email)) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(RideRequestsActivity.this);
+                    LayoutInflater inflater = getLayoutInflater();
+                    View dialogView = inflater.inflate(R.layout.request_dialog, null);
+                    builder.setView(dialogView);
+
+                    EditText editText1 = dialogView.findViewById(R.id.editText1);
+                    EditText editText2 = dialogView.findViewById(R.id.editText2);
+                    EditText editText3 = dialogView.findViewById(R.id.editText3);
+
+                    // Pre-fill the dialog with existing request data
+                    editText1.setText(date);
+                    editText2.setText(departureLocation);
+                    editText3.setText(dropOffLocation);
+
+                    builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String newDate = editText1.getText().toString();
+                            String newDepartureLocation = editText2.getText().toString();
+                            String newDropOffLocation = editText3.getText().toString();
+
+                            RideRequest updatedRequest = new RideRequest(email, newDate, newDepartureLocation, newDropOffLocation);
+
+                            // Update Firebase with the new details
+                            requestRef.child(key).setValue(updatedRequest).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    // Update the card view or refresh the UI
+                                    tvDate.setText("Date: " + newDate);
+                                    tvDepartureLocation.setText("Departure: " + newDepartureLocation);
+                                    tvDropOffLocation.setText("Drop-off: " + newDropOffLocation);
+                                    Toast.makeText(RideRequestsActivity.this, "Request updated successfully.", Toast.LENGTH_SHORT).show();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(RideRequestsActivity.this, "Failed to update the request: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    });
+
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                } else {
+                    Toast.makeText(RideRequestsActivity.this, "You can only edit your own requests.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
