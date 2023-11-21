@@ -153,18 +153,24 @@ public class RideOffersActivity extends AppCompatActivity {
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                offersRef.child(key).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        offerContainer.removeView(cardView);
-                        Toast.makeText(RideOffersActivity.this, "Request deleted successfully.", Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(RideOffersActivity.this, "Failed to delete the request: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                if (userMail != null && userMail.equals(email)) {
+                    // The user email matches the one on the card, proceed with deletion
+                    offersRef.child(key).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            offerContainer.removeView(cardView);
+                            Toast.makeText(RideOffersActivity.this, "Request deleted successfully.", Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(RideOffersActivity.this, "Failed to delete the request: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    // The user email does not match the one on the card
+                    Toast.makeText(RideOffersActivity.this, "You can only delete your own requests.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

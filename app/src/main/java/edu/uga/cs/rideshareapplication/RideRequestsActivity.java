@@ -144,21 +144,28 @@ public class RideRequestsActivity extends AppCompatActivity {
                 handleAcceptButtonClick(email, date, departureLocation, dropOffLocation);
             }
         });
+
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                requestRef.child(key).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        requestContainer.removeView(cardView);
-                        Toast.makeText(RideRequestsActivity.this, "Request deleted successfully.", Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(RideRequestsActivity.this, "Failed to delete the request: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                if (userMail != null && userMail.equals(email)) {
+                    // The user email matches the one on the card, proceed with deletion
+                    requestRef.child(key).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            requestContainer.removeView(cardView);
+                            Toast.makeText(RideRequestsActivity.this, "Request deleted successfully.", Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(RideRequestsActivity.this, "Failed to delete the request: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    // The user email does not match the one on the card
+                    Toast.makeText(RideRequestsActivity.this, "You can only delete your own requests.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
