@@ -2,11 +2,13 @@ package edu.uga.cs.rideshareapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -77,6 +79,74 @@ public class HomePageActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateUserPointsDisplay();
+        checkForAcceptedRides();
+    }
+
+    private void updateUserPointsDisplay() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) return;
+
+        String emailKey = currentUser.getEmail().replace(".", ",");
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(emailKey);
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Integer points = dataSnapshot.child("points").getValue(Integer.class);
+                    pointAvail.setText("Points Available: " + (points != null ? points : 0));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("HomePageActivity", "Error fetching points", databaseError.toException());
+            }
+        });
+    }
+
+    private void checkForAcceptedRides() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) return;
+
+        String currentUserEmail = currentUser.getEmail();
+        DatabaseReference acceptedRidesRef = FirebaseDatabase.getInstance().getReference("accepted_rides").child("ride_offers");
+        DatabaseReference acceptedRidesReq = FirebaseDatabase.getInstance().getReference("accepted_rides").child("ride_requests");
+
+        acceptedRidesRef.orderByChild("userRequestEmail").equalTo(currentUserEmail).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Toast.makeText(HomePageActivity.this, "You are the driver for an accepted offer!", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("HomePageActivity", "Error checking driver status", databaseError.toException());
+            }
+        });
+
+        acceptedRidesRef.orderByChild("acceptorEmail").equalTo(currentUserEmail).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Toast.makeText(HomePageActivity.this, "You are a rider for an accepted offer!", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("HomePageActivity", "Error checking rider status", databaseError.toException());
+            }
+        });
+    }
+
     public void signOut() {
         FirebaseAuth.getInstance().signOut();
         Toast.makeText(this, "Signed out successfully.", Toast.LENGTH_SHORT).show();

@@ -2,7 +2,7 @@ package edu.uga.cs.rideshareapplication;
 
 public class RideOffer {
 
-    public String userOfferEmail;
+    public String userRequestEmail ;
     public String date;
     public String departureLocation;
     public String dropOffLocation;
@@ -13,7 +13,7 @@ public class RideOffer {
     }
 
     public RideOffer(String email, String date, String departureLocation, String dropOffLocation) {
-        this.userOfferEmail = email;
+        this.userRequestEmail  = email;
         this.date = date;
         this.departureLocation = departureLocation;
         this.dropOffLocation = dropOffLocation;
