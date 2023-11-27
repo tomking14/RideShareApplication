@@ -1,6 +1,7 @@
 package edu.uga.cs.rideshareapplication;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -31,7 +32,13 @@ public class SignUpActivity extends AppCompatActivity {
     private Button confirmButton;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.signup_activity);
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            // If landscape orientation, use a specific layout
+            setContentView(R.layout.signup_horizontal);
+        } else {
+            // If portrait orientation, use the default layout
+            setContentView(R.layout.signup_activity);
+        }
 
         mAuth = FirebaseAuth.getInstance();
 

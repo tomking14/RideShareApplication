@@ -1,6 +1,7 @@
 package edu.uga.cs.rideshareapplication;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,8 +28,13 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.loginactivty);
-
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            // If landscape orientation, use a specific layout
+            setContentView(R.layout.login_horizontal);
+        } else {
+            // If portrait orientation, use the default layout
+            setContentView(R.layout.loginactivty);
+        }
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
