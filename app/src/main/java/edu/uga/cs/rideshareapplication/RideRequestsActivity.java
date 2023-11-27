@@ -281,8 +281,8 @@ public class RideRequestsActivity extends AppCompatActivity {
                         // Update points
                         String acceptorEmailKey = currentUser.getEmail().replace(".", ",");
                         String creatorEmailKey = userRequestEmail.replace(".", ",");
-                        updateUserPoints(creatorEmailKey, 25); // Add points to offer creator
-                        updateUserPoints(acceptorEmailKey, -25); // Subtract points from acceptor
+                        updateUserPoints(creatorEmailKey, -25); // Add points to offer creator
+                        updateUserPoints(acceptorEmailKey, 25); // Subtract points from acceptor
                         Toast.makeText(RideRequestsActivity.this, "Request accepted. We'll make sure the other user knows so!", Toast.LENGTH_SHORT).show();
                     }).addOnFailureListener(e -> {
                         Toast.makeText(RideRequestsActivity.this, "Failed to move offer to 'accepted_rides'.", Toast.LENGTH_SHORT).show();
