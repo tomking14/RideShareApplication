@@ -50,7 +50,6 @@
             style="@style/Widget.Material3.Button.TonalButton"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_toRightOf="@id/llContent"
             android:paddingLeft="12dp"
             android:paddingRight="12dp"

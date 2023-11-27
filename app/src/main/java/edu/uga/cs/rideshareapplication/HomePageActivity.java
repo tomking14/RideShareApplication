@@ -1,6 +1,7 @@
 package edu.uga.cs.rideshareapplication;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -33,7 +34,13 @@ public class HomePageActivity extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.homepage_activity);
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            // If landscape orientation, use a specific layout
+            setContentView(R.layout.homepage_horizontal);
+        } else {
+            // If portrait orientation, use the default layout
+            setContentView(R.layout.homepage_activity);
+        }
         signOutButton = findViewById(R.id.signoutBtn);
         rideOffers = findViewById(R.id.offersBtn);
         rideRequests = findViewById(R.id.requestsBtn);

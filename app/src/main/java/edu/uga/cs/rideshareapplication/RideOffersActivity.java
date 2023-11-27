@@ -265,7 +265,7 @@ public class RideOffersActivity extends AppCompatActivity {
         TextView tvRideDate = dialogView.findViewById(R.id.tvRideDate);
         TextView tvRideDeparture = dialogView.findViewById(R.id.tvRideDeparture);
         TextView tvRideDropOff = dialogView.findViewById(R.id.tvRideDropOff);
-        tvRideRequestDetails.setText("Are you sure you want to accept the ride request for " + key + "?");
+        tvRideRequestDetails.setText("Are you sure you want to accept the ride offer from " + userRequestEmail + "?");
         tvRideDate.setText("Date: " + date);
         tvRideDeparture.setText("Departure: " + departureLocation);
         tvRideDropOff.setText("Drop-off: " + dropOffLocation);
@@ -293,13 +293,13 @@ public class RideOffersActivity extends AppCompatActivity {
                         String creatorEmailKey = userRequestEmail.replace(".", ",");
                         updateUserPoints(creatorEmailKey, 25); // Add points to offer creator
                         updateUserPoints(acceptorEmailKey, -25); // Subtract points from acceptor
-                        Toast.makeText(RideOffersActivity.this, "Offer accepted and moved to 'accepted_rides'.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RideOffersActivity.this, "Offer accepted. We'll make sure the other user knows so!", Toast.LENGTH_SHORT).show();
                     }).addOnFailureListener(e -> {
                         Toast.makeText(RideOffersActivity.this, "Failed to move offer to 'accepted_rides'.", Toast.LENGTH_SHORT).show();
                     });
 
                 } else {
-                    Toast.makeText(RideOffersActivity.this, "There was a problem accepting the offer.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RideOffersActivity.this, "There was a problem accepting the offer. Make sure you don't accept your offer", Toast.LENGTH_SHORT).show();
                 }
                 dialog.dismiss();
             }

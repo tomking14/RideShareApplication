@@ -59,26 +59,21 @@
         android:id="@+id/tvPointsAvail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginBottom="250dp"
+        android:layout_marginStart="130dp"
+        android:layout_marginBottom="40dp"
         android:text="Available Points: 0"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/offersBtn" />
+        app:layout_constraintBottom_toTopOf="@+id/offersBtn"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/viewAcceptedRidesButton"
         style="@style/Widget.Material3.ExtendedFloatingActionButton.Icon.Primary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="98dp"
+        android:layout_marginStart="160dp"
+        android:layout_marginBottom="24dp"
         android:text="Accepted Rides"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.325"
-        app:layout_constraintStart_toEndOf="@+id/tvPointsAvail"
-        app:layout_constraintTop_toBottomOf="@+id/requestsBtn"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintBottom_toTopOf="@+id/requestsBtn"
+        app:layout_constraintStart_toEndOf="@+id/tvPointsAvail" />
 </androidx.constraintlayout.widget.ConstraintLayout>
