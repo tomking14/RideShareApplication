@@ -26,6 +26,8 @@ public class HomePageActivity extends AppCompatActivity {
     private Button rideRequests;
 
     private Button rideOffers;
+    private Button viewAcceptedRidesButton;
+
     private int userPoints = 0;
     private TextView pointAvail;
 
@@ -37,8 +39,20 @@ public class HomePageActivity extends AppCompatActivity {
         rideRequests = findViewById(R.id.requestsBtn);
         pointAvail = findViewById(R.id.tvPointsAvail);
 
+
         rideRequests.setOnClickListener(new ActivityStarterClass(RideRequestsActivity.class));
         rideOffers.setOnClickListener(new ActivityStarterClass(RideOffersActivity.class));
+
+        viewAcceptedRidesButton = findViewById(R.id.viewAcceptedRidesButton);
+        viewAcceptedRidesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomePageActivity.this, AcceptedRidesActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
 
         signOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
