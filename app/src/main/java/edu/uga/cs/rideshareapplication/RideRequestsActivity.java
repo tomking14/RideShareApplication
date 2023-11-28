@@ -149,7 +149,7 @@ public class RideRequestsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Handle the button click
-                handleAcceptButtonClick(key,userRequestEmail, date, departureLocation, dropOffLocation);
+                handleAcceptButtonClick(cardView,key,userRequestEmail, date, departureLocation, dropOffLocation);
             }
         });
         modifyButton.setOnClickListener(new View.OnClickListener() {
@@ -243,7 +243,7 @@ public class RideRequestsActivity extends AppCompatActivity {
 
         requestContainer.addView(cardView);
     }
-    private void handleAcceptButtonClick(String key,String userRequestEmail, String date, String departureLocation, String dropOffLocation) {
+    private void handleAcceptButtonClick(View cardView,String key,String userRequestEmail, String date, String departureLocation, String dropOffLocation) {
         AlertDialog.Builder builder = new AlertDialog.Builder(RideRequestsActivity.this);
         LayoutInflater inflater = getLayoutInflater();
 
@@ -276,8 +276,6 @@ public class RideRequestsActivity extends AppCompatActivity {
 
                     // Add the accepted offer to the 'accepted_rides' node
                     acceptedRidesRef.push().setValue(acceptedOffer).addOnSuccessListener(aVoid -> {
-                        // After successfully adding to 'accepted_rides', delete from 'ride_offers'
-                        requestRef.child(key).removeValue();
                         // Update points
                         String acceptorEmailKey = currentUser.getEmail().replace(".", ",");
                         String creatorEmailKey = userRequestEmail.replace(".", ",");
@@ -286,6 +284,17 @@ public class RideRequestsActivity extends AppCompatActivity {
                         Toast.makeText(RideRequestsActivity.this, "Request accepted. We'll make sure the other user knows so!", Toast.LENGTH_SHORT).show();
                     }).addOnFailureListener(e -> {
                         Toast.makeText(RideRequestsActivity.this, "Failed to move offer to 'accepted_rides'.", Toast.LENGTH_SHORT).show();
+                    });
+                    requestRef.child(key).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            requestContainer.removeView(cardView);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(RideRequestsActivity.this, "Failed to delete the request: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
                     });
 
                 } else {
