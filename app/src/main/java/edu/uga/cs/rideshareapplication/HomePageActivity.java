@@ -140,11 +140,11 @@ public class HomePageActivity extends AppCompatActivity {
         DatabaseReference acceptedRidesRef = FirebaseDatabase.getInstance().getReference("accepted_rides").child("ride_offers");
         DatabaseReference acceptedRidesReq = FirebaseDatabase.getInstance().getReference("accepted_rides").child("ride_requests");
 
-        acceptedRidesRef.orderByChild("userRequestEmail").equalTo(currentUserEmail).addListenerForSingleValueEvent(new ValueEventListener() {
+        acceptedRidesReq.orderByChild("userRequestEmail").equalTo(currentUserEmail).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    Toast.makeText(HomePageActivity.this, "You are the driver for an accepted offer!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(HomePageActivity.this, "You are the driver for a certain request!", Toast.LENGTH_LONG).show();
                 }
             }
 
