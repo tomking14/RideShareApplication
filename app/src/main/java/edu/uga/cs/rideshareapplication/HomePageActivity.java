@@ -97,6 +97,7 @@ public class HomePageActivity extends AppCompatActivity {
             // Handle user not signed in
             Toast.makeText(HomePageActivity.this, "Uh oh, I couldn't sign you in :(" , Toast.LENGTH_SHORT).show();
         }
+        checkForAcceptedRides();
 
 
     }
@@ -105,7 +106,7 @@ public class HomePageActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         updateUserPointsDisplay();
-        checkForAcceptedRides();
+
     }
 
     private void updateUserPointsDisplay() {

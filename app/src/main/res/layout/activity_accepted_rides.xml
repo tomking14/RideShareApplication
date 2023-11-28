@@ -22,6 +22,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/tvAcceptedRidesTitle"
         android:layout_marginTop="16dp"
+
         android:divider="@android:color/darker_gray"
         android:dividerHeight="0.5dp" />
 
