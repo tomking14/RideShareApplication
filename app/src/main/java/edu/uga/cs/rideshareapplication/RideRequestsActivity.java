@@ -352,7 +352,6 @@ public class RideRequestsActivity extends AppCompatActivity {
 
 
 
-
     private void fetchAndDisplayOffers() {
         requestRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

@@ -70,7 +70,7 @@ public class SignUpActivity extends AppCompatActivity {
                                 String userId = user.getUid();
                                 Map<String, Object> userData = new HashMap<>();
                                 userData.put("email", email);
-                                userData.put("points", 100);
+                                userData.put("points", 0);
                                 databaseReference.child("users").child(userId).setValue(userData);
                             }
                             Toast.makeText(SignUpActivity.this, "Registration Successful!!", Toast.LENGTH_SHORT).show();
